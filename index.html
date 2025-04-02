@@ -1,0 +1,107 @@
+<!DOCTYPE html> 
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>STORY TELLING NHÓM DV-206</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    .tab-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      margin: 0 5px;
+      background-color: #f9f9f9;
+    }
+    .tab.active {
+      background-color: #ddd;
+      font-weight: bold;
+    }
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      width: 95vw;
+      margin: 0 auto;
+    }
+    #chart {
+      flex: 3;
+    }
+    #legend {
+      flex: 1;
+      text-align: left;
+      padding-left: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      padding: 10px;
+      min-width: 250px;
+    }
+  </style>
+</head>
+<body>
+  <h2>STORY TELLING NHÓM DV-206</h2>
+  <div class="tab-container" id="tabs">
+    <div class="tab active" data-quarter="Q1">Q1</div>
+    <div class="tab" data-quarter="Q2">Q2</div>
+    <div class="tab" data-quarter="Q3">Q3</div>
+    <div class="tab" data-quarter="Q5">Q5</div>
+    <div class="tab" data-quarter="Q7">Q7</div>
+    <div class="tab" data-quarter="Q11">Q11</div>
+    <div class="tab" data-quarter="Q12">Q12</div>
+    <div class="tab" data-quarter="Q13">Q13</div>
+    <div class="tab" data-quarter="Q14">Q14</div>
+    <div class="tab" data-quarter="Q15">Q15</div>
+  </div>
+  <div class="chart-container">
+    <div id="chart"></div>
+    <div id="legend"></div>
+  </div>
+
+  <script>
+    function loadScript(quarter) {
+      console.log("Loading:", quarter + ".js");
+      const existingScript = document.querySelector(`script[src="${quarter}.js"]`);
+      
+      if (existingScript) {
+        existingScript.remove();
+      }
+
+      const script = document.createElement("script");
+      script.src = `${quarter}.js`;
+      script.onload = function() {
+        console.log(`${quarter}.js loaded`);
+        if (typeof window[`load${quarter}Chart`] === "function") {
+          window[`load${quarter}Chart`]();
+        } else {
+          console.error(`Function load${quarter}Chart() not found in ${quarter}.js`);
+        }
+      };
+      script.onerror = function() {
+        console.error(`Failed to load ${quarter}.js`);
+      };
+      
+      document.body.appendChild(script);
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", function() {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        this.classList.add("active");
+        d3.select("#chart").html("");
+        d3.select("#legend").html("");
+        loadScript(this.getAttribute("data-quarter"));
+      });
+    });
+
+    loadScript("Q1");
+  </script>
+</body>
+</html>
